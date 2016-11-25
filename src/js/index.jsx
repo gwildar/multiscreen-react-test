@@ -3,22 +3,34 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 
-//
-// Replace static AppRouter with router
-// i.e.
-// import AppRouter from './containers/AppRouter.jsx';
-//
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { message: 'none' };
+    // This binding is necessary to make `this` work in the callback
+    this.handleMessage = this.handleMessage.bind(this);
+    const worker = new SharedWorker('worker.js');
+    worker.port.start();
+    worker.port.onmessage = this.handleMessage;
 
-const worker = new SharedWorker('worker.js');
-worker.port.addEventListener('message', (e) => alert(e.data), false);
+    // post a message to the shared web worker
+    worker.port.postMessage('test');
+  }
 
-worker.port.start();
+  handleMessage(e) {
+    this.setState({ message: e.data });
+  }
 
-// post a message to the shared web worker
-worker.port.postMessage('Alyssa');
+  render() {
+    return (
+      <div>
+        {this.state.message}
+      </div>
+    );
+  }
+}
 
-const AppRouter = () => (
-  <div>App Starts Here</div>
+ReactDOM.render(
+  <App />,
+  document.getElementById('app')
 );
-
-ReactDOM.render(<AppRouter />, document.getElementById('app'));

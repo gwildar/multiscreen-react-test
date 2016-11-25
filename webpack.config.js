@@ -90,9 +90,6 @@ var config = {
         test: /\.woff|woff2|ttf|eot|svg$/,
         loader: 'file-loader?name=fonts/[name].[ext]'
       },
-      {
-        loader: 'raw-loader?./worker.js'
-      },
     ]
   },
   resolve: {
